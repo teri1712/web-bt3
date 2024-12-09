@@ -1,16 +1,17 @@
-function onStateChanged(obj) {
-  const revenue = obj.revenue;
-  const mainBook = revenue.getElementById("main-book");
+function onRatingStateChanged(obj) {
+  const topRating = obj.topRating;
+  const mainBook = topRating.querySelector("#main-book");
   mainBook.src = obj.movies[obj.current_index].image;
   mainBook.style.opacity = obj.main_book_opacity;
-  const dummyBook = revenue.getElementById("dummy-book");
+
+  const dummyBook = topRating.querySelector("#dummy-book");
   dummyBook.src = obj.movies[obj.dummy_index].image;
   dummyBook.style.opacity = obj.dummy_book_opacity;
 
-  const title = revenue.getElementsByClassName("book-info-tile")[0];
-  const genre = revenue.getElementsByClassName("book-info-genre")[0];
-  const rating = revenue.getElementsByClassName("book-info-rating")[0];
-  const runtime = revenue.getElementsByClassName("book-info-runtime")[0];
+  const title = topRating.querySelector(".book-info-title");
+  const genre = topRating.querySelector(".book-info-genre");
+  const rating = topRating.querySelector(".book-info-rating");
+  const runtime = topRating.querySelector(".book-info-runtime");
 
   title.textContent = obj.movies[obj.current_index].title;
   genre.textContent = obj.movies[obj.current_index].genre;
@@ -18,24 +19,28 @@ function onStateChanged(obj) {
   runtime.textContent = obj.movies[obj.current_index].runtime;
 }
 
-function initRevenue() {
-  const revenue = document.getElementById("revenue");
-  const back = revenue.getElementById("back");
-  const next = revenue.getElementById("next");
+function initTopRating() {
+  const topRating = document.getElementById("top-rating");
+  const back = topRating.querySelector("#back");
+  const next = topRating.querySelector("#next");
   const obj = {};
-  obj.revenue = revenue;
+  obj.topRating = topRating;
   obj.current_index = 0;
-  obj.movies = window.revenues;
+  obj.movies = window.TOP_RATING;
   obj.dummy_book_interval = null;
   obj.dummy_index = 0;
   obj.dummy_book_opacity = 0;
   obj.main_book_opacity = 1;
-  onStateChanged(obj);
+
+  onRatingStateChanged(obj);
   back.addEventListener("click", function () {
     switchPrevBook(obj);
   });
   next.addEventListener("click", function () {
     switchNextBook(obj);
+  });
+  topRating.querySelector("#show-book").addEventListener("click", function () {
+    movieClicked(obj.movies[obj.current_index].id);
   });
 }
 
@@ -48,6 +53,8 @@ function performSwitchBook(obj, index) {
   if (obj.dummy_book_interval != null) {
     clearInterval(obj.dummy_book_interval);
   }
+  onRatingStateChanged(obj);
+
   let current_time = 0;
   obj.dummy_book_interval = setInterval(() => {
     current_time += 20;
@@ -57,6 +64,7 @@ function performSwitchBook(obj, index) {
     }
     obj.main_book_opacity = Math.min(1, current_time / 500);
     obj.dummy_book_opacity = Math.max(0, 1 - current_time / 500);
+    onRatingStateChanged(obj);
   }, 20);
 }
 function switchNextBook(obj) {
@@ -64,12 +72,12 @@ function switchNextBook(obj) {
   if (index === 5) {
     index = 0;
   }
-  performSwitchBook(index);
+  performSwitchBook(obj, index);
 }
 function switchPrevBook(obj) {
   let index = obj.current_index - 1;
   if (index === -1) {
     index = 4;
   }
-  performSwitchBook(index);
+  performSwitchBook(obj, index);
 }

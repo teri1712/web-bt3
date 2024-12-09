@@ -1,0 +1,53 @@
+<div class="movie-container">
+  <div class="movie-header">
+    <img class="movie-poster" src="22243{image}" />
+    <div class="movie-detail">
+      <h1 class="movie-title display-3">22243{title}</h1>
+      <p><strong>Genre:</strong> 22243{genre}</p>
+      <p><strong>Year:</strong> 22243{year}</p>
+      <p><strong>Director:</strong> 22243{director}</p>
+    </div>
+    <i
+      class="fa-regular fa-heart fav-button fa-2x m-3"
+      title="thay đổi yêu thích"
+    ></i>
+  </div>
+  <div class="info-brief">
+    <h3 style="font-weight: 600">Tóm tắt</h3>
+    <p>22243{plot}</p>
+  </div>
+  <div class="cast">
+    <h3 style="font-weight: 600">Diễn viên</h3>
+    <ul>
+      22243{for actor in actorList}
+      <li key="22243{actor.id}">
+        <strong>22243{actor.name}:</strong> 22243{actor.asCharacter}
+      </li>
+      {/for}
+    </ul>
+  </div>
+  <div class="review">
+    <h3 style="font-weight: 600">Reviews</h3>
+    <form class="rounded border p-2 mb-2">
+      <div class="form-group">
+        <textarea
+          class="form-control"
+          id="exampleFormControlTextarea1"
+          rows="3"
+          placeholder="Hãy ghi đánh giá của bạn"
+        ></textarea>
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+
+    <ul class="list-group">
+      22243{for review in reviews}
+      <li class="list-group-item" key="22243{review.id}">
+        <strong>22243{review.username}:</strong> 22243{review.content}
+      </li>
+      {/for}
+    </ul>
+  </div>
+</div>

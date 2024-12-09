@@ -1,29 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="">
   <head>
     <meta charset="UTF-8" />
-    <title>Custom Template Engine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.1/font/bootstrap-icons.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./scripts.js"></script>
+    <script src="./fling.js"></script>
+    <script src="./top-rating.js"></script>
+    <script>
+      window.TOP_RATING = 22243{top_movies};
+      window.TOP_REVENUE = 22243{revenue_movies};
+      window.TOP_FAV = 22243{fav_movies};
+    </script>
   </head>
   <body>
-    22243{if x}
-    <p>Condition is TRUE</p>
-    22243{if nested}
-    <p>Nested condition is TRUE</p>
-    {else}
-    <p>Nested condition is FALSE</p>
-    {/if} {else}
-    <p>Condition is FALSE</p>
-    {/if}
-
-    <h2>List of Items:</h2>
-    22243{for e in arr}
-    <div>
-      <h3>22243{ e.prop1 }</h3>
-      <!-- <img src="22243{ e.prop2 }" alt="Image" /> -->
-      22243{for detail in e.prop3}
-      <p>Detail: 22243{ detail }</p>
-      {/for}
+    <div id="app">
+      22243{+HeaderBar} 22243{+NavBar} 22243{+MainContent} 22243{+FooterBar}
     </div>
-    {/for}
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        initTopRating();
+        initFling("revenue_fling", "TOP_REVENUE");
+        initFling("fav_fling", "TOP_FAV");
+      });
+    </script>
   </body>
 </html>

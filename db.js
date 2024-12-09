@@ -80,10 +80,11 @@ export async function deleteFavourite(movieId) {
   }
 }
 export async function getMovie(movieId) {
-  let query = ` SELECT * FROM Movies WHERE movie_id = $1; `;
+  let query = ` SELECT * FROM Movies WHERE id = $1; `;
   const movie = await db.one(query, [movieId]);
 
   movie.actorList = [];
+  query = ` SELECT * FROM MovieActors WHERE movie_id = $1; `;
   const movieActors = await db.any(query, [movie.id]);
   for (let movieActor of movieActors) {
     const actorId = movieActor.actor_id;
@@ -92,11 +93,14 @@ export async function getMovie(movieId) {
     actor.asCharacter = movieActor.asCharacter;
     movie.actorList.push(actor);
   }
+  query = ` SELECT * FROM Reviews WHERE movie_id = $1; `;
+  movie.reviews = await db.any(query, [movie.id]);
+
   return movie;
 }
 
 export async function getActor(actorId) {
-  let query = ` SELECT * FROM Actors WHERE actor_id = $1; `;
+  let query = ` SELECT * FROM Actors WHERE id = $1; `;
   const actor = await db.one(query, [actorId]);
 
   query = ` SELECT * FROM MovieActors WHERE actor_id = $1; `;
@@ -113,7 +117,7 @@ export async function getActor(actorId) {
 export async function fetchByMovieNameOrGenre(pattern, page, per_page) {
   const offset = page * per_page;
   const limit = per_page;
-  const query = ` SELECT * FROM Movies WHERE genre ~* $1 OR title ~* $2 OFFSET = $3 LIMIT = $4; `;
+  const query = ` SELECT * FROM Movies WHERE genre ~* $1 OR title ~* $2 OFFSET $3 LIMIT $4; `;
   try {
     const movies = await db.any(query, [pattern, pattern, offset, limit]);
     return movies;
@@ -126,7 +130,7 @@ export async function fetchByActorName(pattern, page, per_page) {
   const offset = page * per_page;
   const limit = per_page;
 
-  const query = ` SELECT * FROM Actors WHERE name ~* $1 OFFSET = $2 LIMIT = $3;`;
+  const query = ` SELECT * FROM Actors WHERE name ~* $1 OFFSET $2 LIMIT $3;`;
   try {
     const actors = await db.any(query, [pattern, offset, limit]);
     return actors;
@@ -135,43 +139,35 @@ export async function fetchByActorName(pattern, page, per_page) {
     throw error;
   }
 }
-export async function fetchTop50(page, per_page) {
-  const offset = page * per_page;
-  const limit = per_page;
-
-  const query = ` SELECT m.* FROM Top50Movies t INNER JOIN Movies m ON t.movie_id = m.id 
-  ORDER BY t.rank DESC OFFSET = $1 LIMIT = $2; `;
-  try {
-    const movies = await db.any(query, [offset, limit]);
-    return movies;
-  } catch (error) {
-    console.error("Error actors by name:", error);
-    throw error;
-  }
-}
-export async function fetchPopulars(page, per_page) {
-  const offset = page * per_page;
-  const limit = per_page;
-
-  const query = ` SELECT m.* FROM MostPopularMovies t INNER JOIN Movies m ON t.movie_id = m.id 
-  ORDER BY t.rank DESC OFFSET = $1 LIMIT = $2; `;
-  try {
-    const movies = await db.any(query, [offset, limit]);
-    return movies;
-  } catch (error) {
-    console.error("Error actors by name:", error);
-    throw error;
-  }
-}
-export async function fetchTopRevenue() {
-  const query = ` SELECT * FROM Movies 
-  ORDER BY cumulative DESC LIMIT = 5; `;
+export async function fetchTopRating() {
+  const query = `SELECT * FROM Movies ORDER BY rating DESC LIMIT 5;`;
   try {
     const movies = await db.any(query);
     return movies;
   } catch (error) {
-    console.error("Error actors by name:", error);
+    console.error("Error top rating:", error);
     throw error;
   }
 }
+export async function fetchTopRevenues() {
+  const query = `SELECT * FROM Movies ORDER BY cumulative DESC LIMIT 15; `;
+  try {
+    const movies = await db.any(query);
+    return movies;
+  } catch (error) {
+    console.error("Error top revenues:", error);
+    throw error;
+  }
+}
+export async function fetchTopFav() {
+  const query = `SELECT * FROM Favourites ORDER BY id ASC LIMIT 15`;
+  try {
+    const movies = await db.any(query);
+    return movies;
+  } catch (error) {
+    console.error("Error top revenues:", error);
+    throw error;
+  }
+}
+
 export default db;

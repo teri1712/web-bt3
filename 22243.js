@@ -17,15 +17,7 @@ function getObjectOfContext(key, context) {
   const props = key.split(".");
   let obj = context;
   for (let prop of props) {
-    if (prop.includes("[")) {
-      let s = prop.indexOf("[") + 1;
-      let e = prop.indexOf("]");
-      let index = parseInt(prop.substring(s, e));
-      prop = prop.substring(0, s - 1);
-      obj = obj[prop][index];
-    } else {
-      obj = obj[prop];
-    }
+    obj = obj[prop];
     if (!obj) return undefined;
   }
   return obj;
@@ -73,45 +65,15 @@ function parseToken(template, offset, context, loopContext) {
   return parseVar(template, offset, context, loopContext);
 }
 function parsePartial(template, offset, context, loopContext) {
-  const s = template.indexOf("{", offset) + 1;
+  const s = template.indexOf(begPartial, offset) + begPartial.length;
   const e = template.indexOf("}", offset);
-  const props = template.substring(s, e).trim().split(" ");
-  const partial_name = props[0];
-  for (let i = 1; i < props.length; i++) {
-    const prop = props[i];
-    const e = prop.split("=");
-    if (e.length == 2) {
-      const key = e[0];
-      const value = e[1].substring(1, e[1].length - 1);
-      let isString = !value.includes("{");
-      console.log(key);
-      console.log(value);
-      if (isString) {
-        context[k] = value;
-      } else {
-        context[key] = getObjectOfContext(
-          value.substring(1, value.length - 1),
-          context,
-          loopContext
-        );
-      }
-    }
-  }
-  const filename = "./views" + partial_name + "." + token;
+  const partial_name = template.substring(s, e);
+  const filename = "./views/" + partial_name + "." + token;
   const content = fs.readFileSync(filename, "utf8");
-  const parsed = {
-    result: parse(content, 0, context, loopContext),
+  return {
+    result: parse(content + endDoc, 0, context, loopContext, endDoc).result,
     offset: e + 1,
   };
-  for (let i = 1; i < props.length; i++) {
-    const prop = props[i];
-    const e = prop.split("=");
-    if (e.length == 2) {
-      const key = e[0];
-      delete context[key];
-    }
-  }
-  return parsed;
 }
 
 function parseVar(template, offset, context, loopContext) {
@@ -185,7 +147,6 @@ function parseLoop(template, offset, context, loopContext) {
   const item_name = z[0].trim();
   const arr_name = z[1].trim();
   const arr = getObject(arr_name, context, loopContext);
-  console.log(arr);
   let result = [];
   if (!arr) throw new Error("No array found: " + arr_name);
   for (const item of arr) {
@@ -205,7 +166,6 @@ function render(template, context) {
   return parse(template + endDoc, 0, context, {}, endDoc).result;
 }
 export default function (filePath, options, callback) {
-  console.log(options);
   fs.readFile(filePath, "utf8", (err, template) => {
     if (err) return callback(err);
     try {

@@ -14,6 +14,9 @@ function updateTheme(event) {
   movieInfo.style.color = !light_mode ? "rgb(241, 188, 188)" : "black";
   lunar.className = !light_mode ? "fa-solid fa-moon" : "fa-solid fa-gear";
   lunar.style.color = !light_mode ? "#ffd43b" : "black";
+  document.documentElement.style.backgroundColor = light_mode
+    ? "white"
+    : "#2D2E31";
 
   const nav = document.getElementById("nav");
   const home = document.getElementById("home");
@@ -37,4 +40,8 @@ function homeClicked() {
 }
 function favClicked() {
   window.location.href = "http://localhost:8080/myFav";
+}
+function movieClicked(movieId) {
+  console.log(movieId);
+  window.location.href = "http://localhost:8080/movie?movieId=" + movieId;
 }

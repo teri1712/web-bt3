@@ -102,8 +102,6 @@ async function downloadData(path) {
 const moviesData = downloadData("Movies");
 const namesData = downloadData("Names");
 const reviewsData = downloadData("Reviews");
-const top50Data = downloadData("Top50Movies");
-const popularsData = downloadData("MostPopularMovies");
 
 async function saveMovies() {
   const movies = await moviesData;
@@ -134,49 +132,8 @@ async function saveReviews() {
   }
 }
 
-async function saveTop50() {
-  const top50Movies = await top50Data;
-  for (let movie of top50Movies) {
-    const query = `
-    INSERT INTO Top50Movies (movie_id, rank)
-    VALUES ($1, $2) 
-    ON CONFLICT DO NOTHING;
-  `;
-
-    const values = [movie.id, movie.rank];
-
-    try {
-      await db.none(query, values);
-      console.log(`Inserted top50 by ${movie.id}`);
-    } catch (error) {
-      console.error(`Error inserting top50 by ${movie.id}`, error);
-    }
-  }
-}
-
-async function saveMostPopularMovies() {
-  const populars = await popularsData;
-  for (let movie of populars) {
-    const query = `
-    INSERT INTO MostPopularMovies (movie_id, rank)
-    VALUES ($1, $2) 
-    ON CONFLICT DO NOTHING;
-  `;
-
-    const values = [movie.id, movie.rank];
-
-    try {
-      await db.none(query, values);
-      console.log(`Inserted populars by ${movie.id}`);
-    } catch (error) {
-      console.error(`Error inserting populars by ${movie.id}:`, error);
-    }
-  }
-}
 export default async function init() {
   // await saveActors();
-  await saveMovies();
-  // await saveReviews();
-  // await saveTop50();
-  // await saveMostPopularMovies();
+  // await saveMovies();
+  await saveReviews();
 }
