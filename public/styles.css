@@ -240,3 +240,35 @@ label {
   font-style: italic;
   font-size: 1.1em;
 }
+
+#nav-list {
+  margin-top: 10px;
+}
+.search-result {
+  flex: 1 0;
+}
+.film-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.book-element {
+  overflow: hidden;
+}
+.book-element p {
+  text-align: center;
+  margin: 3px;
+}
+.book-element img {
+  width: 100%;
+  cursor: pointer;
+}
+.element-title {
+  font-size: 1.2em;
+  font-weight: 600;
+}
+.element-type {
+  font-size: 1em;
+  color: grey;
+  font-style: italic;
+}

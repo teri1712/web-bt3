@@ -88,9 +88,10 @@ export async function getMovie(movieId) {
   const movieActors = await db.any(query, [movie.id]);
   for (let movieActor of movieActors) {
     const actorId = movieActor.actor_id;
+    console.log(movieActor);
     query = ` SELECT * FROM Actors WHERE id = $1; `;
     const actor = await db.one(query, [actorId]);
-    actor.asCharacter = movieActor.asCharacter;
+    actor.asCharacter = movieActor.ascharacter;
     movie.actorList.push(actor);
   }
   query = ` SELECT * FROM Reviews WHERE movie_id = $1; `;
@@ -118,26 +119,28 @@ export async function fetchByMovieNameOrGenre(pattern, page, per_page) {
   const offset = page * per_page;
   const limit = per_page;
   const query = ` SELECT * FROM Movies WHERE genre ~* $1 OR title ~* $2 OFFSET $3 LIMIT $4; `;
-  try {
-    const movies = await db.any(query, [pattern, pattern, offset, limit]);
-    return movies;
-  } catch (error) {
-    console.error("Error searching movies by genre and title:", error);
-    throw error;
-  }
+  const movies = await db.any(query, [pattern, pattern, offset, limit]);
+
+  query = ` SELECT COUNT(*) FROM Movies WHERE genre ~* $1 OR title ~* $2`;
+  actors.total_page = Math.ceil(
+    parseInt((await db.one(query, [pattern])).count) / per_page
+  );
+
+  return movies;
 }
+
 export async function fetchByActorName(pattern, page, per_page) {
   const offset = page * per_page;
   const limit = per_page;
 
-  const query = ` SELECT * FROM Actors WHERE name ~* $1 OFFSET $2 LIMIT $3;`;
-  try {
-    const actors = await db.any(query, [pattern, offset, limit]);
-    return actors;
-  } catch (error) {
-    console.error("Error actors by name:", error);
-    throw error;
-  }
+  let query = ` SELECT * FROM Actors WHERE name ~* $1 OFFSET $2 LIMIT $3;`;
+  const actors = await db.any(query, [pattern, offset, limit]);
+
+  query = `SELECT COUNT(*) FROM Actors WHERE name ~* $1;`;
+  actors.total_page = Math.ceil(
+    parseInt((await db.one(query, [pattern])).count) / per_page
+  );
+  return actors;
 }
 export async function fetchTopRating() {
   const query = `SELECT * FROM Movies ORDER BY rating DESC LIMIT 5;`;

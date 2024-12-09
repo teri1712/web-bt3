@@ -25,22 +25,12 @@
     <script src="./scripts.js"></script>
     <script src="./fling.js"></script>
     <script src="./top-rating.js"></script>
-    <script>
-      window.TOP_RATING = 22243{top_movies};
-      window.TOP_REVENUE = 22243{revenue_movies};
-      window.TOP_FAV = 22243{fav_movies};
-    </script>
+    <script></script>
   </head>
   <body>
     <div id="app">
-      22243{+HeaderBar} 22243{+NavBar} 22243{+MainContent} 22243{+FooterBar}
+      20220{+HeaderBar} 20220{+NavBar} 20220{+SearchResult} 20220{+FooterBar}
     </div>
-    <script>
-      window.addEventListener("DOMContentLoaded", function () {
-        initTopRating();
-        initFling("revenue_fling", "TOP_REVENUE");
-        initFling("fav_fling", "TOP_FAV");
-      });
-    </script>
+    <script></script>
   </body>
 </html>

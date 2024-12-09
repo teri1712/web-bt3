@@ -1,0 +1,52 @@
+<div class="search-result">
+  <div class="film-grid">
+    20220{for movie in movies}
+    <div
+      class="book-element pb-1 rounded border"
+      onclick="movieClicked('20220{movie.id}')"
+    >
+      <img class="mb-1" :src="movie.image" />
+      <p class="element-title">20220{movie.title}</p>
+      <p class="element-type">20220{movie.genre}</p>
+      <p class="element-type">20220{movie.rating}</p>
+      <p class="element-type">20220{movie.runtime}</p>
+    </div>
+    {/for}
+  </div>
+  <nav>
+    <ul id="nav-list" class="pagination">
+      <li
+        id="previous"
+        class="page-item"
+        class="20220{if prev_disabled}disabled{/if}"
+      >
+        <a class="page-link" 
+        20220{if prev_enabled}
+          href="http://localhost:8080/20220{query}&page=20220{prevPage}"
+        {/if}>
+        <i class="bi bi-arrow-left"></i>
+        </a>
+      </li>
+      20220{for index in pages}
+        <li
+        key="20220{index}"
+        class="page-item"
+      >
+        <a href="http://localhost:8080/20220{query}&page=20220{index}" class="page-link">20220{index}</a>
+      </li>
+      
+      {/for}
+      <li
+        id="next"
+        class="page-item"
+        class="20220{if next_disabled} disabled {/if}"
+      >
+        <a class="page-link" 
+        20220{if next_enabled}
+          href="http://localhost:8080/20220{query}page=20220{nextPage}"
+        {/if}>
+        ><i class="bi bi-arrow-right"></i></a>
+      </li>
+    </ul>
+  </nav>
+</div>

@@ -17,7 +17,7 @@
   </div>
   <div class="flex-grow-0 flex-shrink-0">
     <form class="form-inline" action="http://localhost:8080/search">
-      <select id="op-search" class="form-control mr-2" name="search-op">
+      <select id="op-search" class="form-control mr-2" name="op">
         <option value="movie">Theo Phim</option>
         <option value="actor">Theo Diễn viên</option>
       </select>

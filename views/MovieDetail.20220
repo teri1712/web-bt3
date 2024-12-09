@@ -1,11 +1,11 @@
 <div class="movie-container">
   <div class="movie-header">
-    <img class="movie-poster" src="22243{image}" />
+    <img class="movie-poster" src="20220{image}" />
     <div class="movie-detail">
-      <h1 class="movie-title display-3">22243{title}</h1>
-      <p><strong>Genre:</strong> 22243{genre}</p>
-      <p><strong>Year:</strong> 22243{year}</p>
-      <p><strong>Director:</strong> 22243{director}</p>
+      <h1 class="movie-title display-3">20220{title}</h1>
+      <p><strong>Genre:</strong> 20220{genre}</p>
+      <p><strong>Year:</strong> 20220{year}</p>
+      <p><strong>Director:</strong> 20220{director}</p>
     </div>
     <i
       class="fa-regular fa-heart fav-button fa-2x m-3"
@@ -14,14 +14,14 @@
   </div>
   <div class="info-brief">
     <h3 style="font-weight: 600">Tóm tắt</h3>
-    <p>22243{plot}</p>
+    <p>20220{plot}</p>
   </div>
   <div class="cast">
     <h3 style="font-weight: 600">Diễn viên</h3>
     <ul>
-      22243{for actor in actorList}
-      <li key="22243{actor.id}">
-        <strong>22243{actor.name}:</strong> 22243{actor.asCharacter}
+      20220{for actor in actorList}
+      <li key="20220{actor.id}">
+        <strong>20220{actor.name}:</strong> 20220{actor.asCharacter}
       </li>
       {/for}
     </ul>
@@ -43,9 +43,9 @@
     </form>
 
     <ul class="list-group">
-      22243{for review in reviews}
-      <li class="list-group-item" key="22243{review.id}">
-        <strong>22243{review.username}:</strong> 22243{review.content}
+      20220{for review in reviews}
+      <li class="list-group-item" key="20220{review.id}">
+        <strong>20220{review.username}:</strong> 20220{review.content}
       </li>
       {/for}
     </ul>

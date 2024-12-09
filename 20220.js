@@ -1,9 +1,7 @@
-// 22243.js
-
 import fs from "fs";
 import path from "path";
 
-const token = "22243";
+const token = "20220";
 const begIf = "{if";
 const begLoop = "{for";
 const begPartial = "{+";
@@ -52,9 +50,9 @@ function parse(template, offset, context, loopContext, end) {
   throw new Error("No enclose token " + end);
 }
 function parseToken(template, offset, context, loopContext) {
-  console.log(
-    template.substring(offset + token.length, offset + token.length + 10)
-  );
+  // console.log(
+  //   template.substring(offset + token.length, offset + token.length + 10)
+  // );
   if (template.startsWith(begIf, offset + token.length)) {
     return parseIf(template, offset, context, loopContext);
   } else if (template.startsWith(begLoop, offset + token.length)) {
@@ -81,10 +79,11 @@ function parseVar(template, offset, context, loopContext) {
   const close = template.indexOf("}", offset);
   const key = template.substring(open + 1, close).trim();
   const obj = getObject(key, context, loopContext);
+  let type = typeof obj;
   let value;
-  if (obj instanceof Number) {
+  if (type == "number") {
     value = String(value);
-  } else if (obj instanceof String) {
+  } else if (type == "string") {
     value = obj;
   } else {
     value = JSON.stringify(obj);
@@ -140,7 +139,6 @@ function parseIf(template, offset, context, loopContext) {
 function parseLoop(template, offset, context, loopContext) {
   const s = template.indexOf(begLoop, offset) + begLoop.length;
   const e = template.indexOf("}", s);
-
   const statement = template.substring(s, e);
 
   const z = statement.split("in");
@@ -149,15 +147,20 @@ function parseLoop(template, offset, context, loopContext) {
   const arr = getObject(arr_name, context, loopContext);
   let result = [];
   if (!arr) throw new Error("No array found: " + arr_name);
+  let endOffset = -1;
   for (const item of arr) {
     loopContext[item_name] = item;
+
     let parsed = parse(template, e + 1, context, loopContext, endLoop);
     result.push(parsed.result);
-    offset = parsed.offset;
+    endOffset = parsed.offset;
   }
   delete loopContext[item_name];
   return {
-    offset: offset,
+    offset:
+      endOffset == -1
+        ? template.indexOf(endLoop, e) + endLoop.length
+        : endOffset,
     result: result.join(""),
   };
 }

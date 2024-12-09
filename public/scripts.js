@@ -45,3 +45,9 @@ function movieClicked(movieId) {
   console.log(movieId);
   window.location.href = "http://localhost:8080/movie?movieId=" + movieId;
 }
+
+function handleSearch(query, page) {
+  if (page == -1) return;
+  query = query.substring(0, query.indexOf("page="));
+  window.location.href = "http://localhost:8080/" + query + "page=" + page;
+}
