@@ -1,0 +1,169 @@
+#app {
+  display: flex;
+  flex-direction: column;
+  margin-left: 50px;
+  margin-right: 50px;
+  height: 100%;
+}
+
+#main-content {
+  flex: 1 1;
+}
+#header,
+#nav {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  flex: 0 0 50px;
+}
+#footer {
+  flex: 0 0 15px;
+}
+label {
+  line-height: 20px;
+  vertical-align: bottom;
+}
+.switch-inner-container {
+  vertical-align: middle;
+  display: inline-block;
+  height: 20px;
+}
+#home {
+  cursor: pointer;
+}
+.fling-container {
+  flex: 0 0 200px;
+  display: flex;
+  flex-direction: column;
+}
+.fling-container p {
+  font-weight: 600;
+  font-size: 1.2em;
+}
+.fling {
+  flex: 1 0;
+  display: flex;
+  align-items: center;
+}
+.film-container {
+  flex: 1 0;
+  height: 180px;
+  position: relative;
+}
+.film-list {
+  display: flex;
+  position: relative;
+  z-index: 1;
+}
+.film-list-clone {
+  display: inline-block;
+  width: 100%;
+  margin-right: 20px;
+}
+.film-fling {
+  top: 0;
+  position: absolute;
+  height: 100%;
+  white-space: nowrap;
+  overflow-x: visible;
+  width: 100%;
+  z-index: 2;
+}
+.film-list img {
+  height: 180px;
+  flex: 1 0;
+}
+#back,
+#next {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 50px;
+}
+.film-fling img {
+  margin: 1px;
+}
+
+.zoom-out {
+  height: 180px;
+  flex: 1 0;
+  margin: 1px;
+  cursor: pointer;
+  position: relative;
+}
+.zoom-out img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+.img-info {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: center center;
+  background-color: #181818;
+  width: 100%;
+  z-index: 2;
+}
+.img-info p {
+  margin: 0;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 5px;
+  padding-top: 0;
+}
+.book-info {
+  margin-bottom: 40px;
+  bottom: 0;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  left: 0;
+  color: yellow;
+}
+.book-info-title {
+  font-size: 1.5em;
+  font-weight: 600;
+  bottom: 60px;
+}
+.book-info-genre {
+  font-size: 1em;
+  bottom: 40px;
+}
+.book-info-rating {
+  font-size: 1.1em;
+  font-style: italic;
+  bottom: 20px;
+}
+.book-info-runtime {
+  font-size: 1em;
+  font-style: italic;
+}
+#show-book {
+  cursor: pointer;
+  flex-basis: 220px;
+}
+#show-book img {
+  position: absolute;
+  z-index: 0;
+  height: 100%;
+  width: 100%;
+}
+#show-book div {
+  position: relative;
+  height: 300px;
+  margin: 0 auto;
+}
+#main-book {
+  z-index: 1;
+}
+#dummy-book {
+  z-index: 2;
+}
+#back,
+#next {
+  color: grey;
+  flex: 0 0;
+  cursor: pointer;
+}

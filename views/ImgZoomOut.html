@@ -1,0 +1,19 @@
+
+  <div
+    class="zoom-out"
+    @mouseenter="openViewInfo"
+    @mouseleave="closeViewInfo"
+    @click="onViewMovie(book.id)"
+  >
+    <img class="rounded border" :src="book.image" />
+    <div
+      class="img-info rounded border"
+      v-if="viewInfo"
+      :style="{
+        transform: 'scale(' + info_scale + ')',
+      }"
+    >
+      <img :src="book.image" />
+      <p>{{ book.title }}</p>
+    </div>
+  </div>

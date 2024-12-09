@@ -1,0 +1,37 @@
+<div
+  id="nav"
+  class="rounded border d-flex flex-row px-3 align-items-center d-flex justify-content-between"
+>
+  <div id="home" class="flex-grow-0 flex-shrink-0">
+    <i
+      class="fa-solid fa-house"
+      title="Trang chính"
+      onclick="homeClicked()"
+    ></i>
+    <i
+      class="fa-solid fa-heart fav-button m-3"
+      style="color: #cc3d5c"
+      onclick="favClicked()"
+      title="Trang yêu thích"
+    ></i>
+  </div>
+  <div class="flex-grow-0 flex-shrink-0">
+    <form class="form-inline" action="http://localhost:8080/search">
+      <select id="op-search" class="form-control mr-2" name="search-op">
+        <option value="movie">Theo Phim</option>
+        <option value="actor">Theo Diễn viên</option>
+      </select>
+      <input
+        name="pattern"
+        id="search-movie-field"
+        class="form-control"
+        type="search"
+        placeholder="Search"
+        aria-label="Search"
+      />
+      <button class="btn btn-outline-success my-2 my-sm-0 ml-1" type="submit">
+        Search
+      </button>
+    </form>
+  </div>
+</div>

@@ -4,6 +4,9 @@ import init from "./data-init.js";
 const app = express();
 
 app.engine("22243", customEngine);
+app.use(express.static("./public"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.set("views", "views");
 app.set("view engine", "22243");
 
@@ -30,3 +33,5 @@ app.get("/", (req, res) => {
 });
 
 init();
+
+//  <link rel="stylesheet" href="./styles.css" />;

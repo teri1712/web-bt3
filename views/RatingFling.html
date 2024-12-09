@@ -1,0 +1,81 @@
+<div class="fling-container mb-4">
+  <p class="section-name">Top Rating</p>
+  <div id="rating_fling" class="fling">
+    <div id="back">
+      <i class="fa-solid fa-angle-left"></i>
+    </div>
+    <div class="film-container" style="z-index: 1">
+      <div class="film-list zoom-out-film-list">
+        <div class="zoom-out zoom-out1">
+          <img class="rounded border book-image" />
+          <div class="img-info rounded border zoom-info">
+            <img class="zoom-book-image" />
+            <p class="book-title"></p>
+          </div>
+        </div>
+        <div class="zoom-out zoom-out2">
+          <img class="rounded border book-image" />
+          <div class="img-info rounded border zoom-info">
+            <img class="zoom-book-image" />
+            <p class="book-title"></p>
+          </div>
+        </div>
+
+        <div class="zoom-out zoom-out3">
+          <img class="rounded border book-image" />
+          <div class="img-info rounded border zoom-info">
+            <img class="zoom-book-image" />
+            <p class="book-title"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="film-fling">
+        <div class="film-list-clone fling-left">
+          <div class="film-list">
+            <img
+              id="fing-clone1"
+              class="rounded border"
+              src="22243{movies[0].image}"
+            />
+            <img
+              id="fing-clone2"
+              class="rounded border"
+              src="22243{movies[1].image}"
+            />
+            <img
+              id="fing-clone3"
+              class="rounded border"
+              src="22243{movies[2].image}"
+            />
+          </div>
+        </div>
+        <div class="film-list-clone fling-right">
+          <div class="film-list">
+            <img
+              id="fing-clone4"
+              class="rounded border"
+              src="22243{movies[3].image}"
+            />
+            <img
+              id="fing-clone5"
+              class="rounded border"
+              src="22243{movies[4].image}"
+            />
+            <img
+              id="fing-clone6"
+              class="rounded border"
+              src="22243{movies[5].image}"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="next">
+      <i class="fa-solid fa-angle-right"></i>
+    </div>
+  </div>
+  <script>
+    initFling("rating_fling");
+  </script>
+</div>

@@ -18,9 +18,20 @@ db.none("SET search_path TO ${schema:name}", dbConfig).catch((error) => {
 });
 export async function insertMovie(movie) {
   const query = `
-    INSERT INTO Movies (id, title, year, image, genre, runtime, plot, director, imDbRating, imDbRatingCount)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);
+    INSERT INTO Movies (id, title, year, image, genre, runtime, plot, director, cumulative, rating)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
+    ON CONFLICT DO NOTHING;
   `;
+  let cumulative = 0;
+  if (movie.boxOffice && movie.boxOffice.cumulativeWorldwideGross) {
+    const z = movie.boxOffice.cumulativeWorldwideGross.split("$");
+    if (z.length == 2) {
+      cumulative = parseInt(z[1].replace(",", ""));
+      if (!cumulative) {
+        cumulative = 0;
+      }
+    }
+  }
 
   const values = [
     movie.id,
@@ -28,11 +39,11 @@ export async function insertMovie(movie) {
     movie.year,
     movie.image,
     movie.genre,
-    movie.runtime,
+    movie.runtimeStr,
     movie.plot,
     movie.director,
-    movie.imDbRating,
-    movie.imDbRatingCount,
+    cumulative,
+    movie.ratings && movie.ratings.imDb ? parseFloat(movie.ratings.imDb) : 0,
   ];
 
   try {
@@ -68,67 +79,96 @@ export async function deleteFavourite(movieId) {
     throw error;
   }
 }
-async function prepareMovie(movie) {
-  let query = ` SELECT * FROM MovieActors WHERE movie_id = $1; `;
+export async function getMovie(movieId) {
+  let query = ` SELECT * FROM Movies WHERE movie_id = $1; `;
+  const movie = await db.one(query, [movieId]);
+
   movie.actorList = [];
-  try {
-    const movieActors = await db.any(query, [movie.id]);
-    for (let movieActor of movieActors) {
-      const actorId = movieActor.actor_id;
-      query = ` SELECT * FROM Actors WHERE id = $1; `;
-      try {
-        const actor = await db.one(query, [actorId]);
-        actor.asCharacter = movieActor.asCharacter;
-        movie.actorList.push(actor);
-      } catch (error) {
-        console.error("Error actors by id:", actorId);
-        throw error;
-      }
-    }
-    return movie;
-  } catch (error) {
-    console.error("Error searching movies by genre and title:", error);
-    throw error;
+  const movieActors = await db.any(query, [movie.id]);
+  for (let movieActor of movieActors) {
+    const actorId = movieActor.actor_id;
+    query = ` SELECT * FROM Actors WHERE id = $1; `;
+    const actor = await db.one(query, [actorId]);
+    actor.asCharacter = movieActor.asCharacter;
+    movie.actorList.push(actor);
   }
+  return movie;
 }
 
-async function prepareActor(actor) {
-  let query = ` SELECT * FROM MovieActors WHERE actor_id = $1; `;
+export async function getActor(actorId) {
+  let query = ` SELECT * FROM Actors WHERE actor_id = $1; `;
+  const actor = await db.one(query, [actorId]);
+
+  query = ` SELECT * FROM MovieActors WHERE actor_id = $1; `;
   actor.movies = [];
+  const movieActors = await db.any(query, [actor.id]);
+  for (let movieActor of movieActors) {
+    const movieId = movieActor.movie_id;
+    query = ` SELECT * FROM Movies WHERE id = $1; `;
+    const movie = await db.one(query, [movieId]);
+    actor.movies.push(movie);
+  }
+  return actor;
+}
+export async function fetchByMovieNameOrGenre(pattern, page, per_page) {
+  const offset = page * per_page;
+  const limit = per_page;
+  const query = ` SELECT * FROM Movies WHERE genre ~* $1 OR title ~* $2 OFFSET = $3 LIMIT = $4; `;
   try {
-    const movieActors = await db.any(query, [actor.id]);
-    for (let movieActor of movieActors) {
-      const movieId = movieActor.movie_id;
-      query = ` SELECT * FROM Movies WHERE id = $1; `;
-      try {
-        const movie = await db.one(query, [movieId]);
-        actor.movies.push(movie);
-      } catch (error) {
-        console.error("Error actors by id:", movieId);
-        throw error;
-      }
-    }
-    return actor;
+    const movies = await db.any(query, [pattern, pattern, offset, limit]);
+    return movies;
   } catch (error) {
     console.error("Error searching movies by genre and title:", error);
     throw error;
   }
 }
-export async function fetchByMovieNameOrGenre(pattern) {
-  const query = ` SELECT * FROM Movies WHERE genre ~* $1 OR title ~* $2; `;
+export async function fetchByActorName(pattern, page, per_page) {
+  const offset = page * per_page;
+  const limit = per_page;
+
+  const query = ` SELECT * FROM Actors WHERE name ~* $1 OFFSET = $2 LIMIT = $3;`;
   try {
-    const movies = await db.any(query, [pattern, pattern]);
-    return movies.map((movie) => prepareMovie(movie));
+    const actors = await db.any(query, [pattern, offset, limit]);
+    return actors;
   } catch (error) {
-    console.error("Error searching movies by genre and title:", error);
+    console.error("Error actors by name:", error);
     throw error;
   }
 }
-export async function fetchByActorName(pattern) {
-  const query = ` SELECT * FROM Actors WHERE name ~* $1; `;
+export async function fetchTop50(page, per_page) {
+  const offset = page * per_page;
+  const limit = per_page;
+
+  const query = ` SELECT m.* FROM Top50Movies t INNER JOIN Movies m ON t.movie_id = m.id 
+  ORDER BY t.rank DESC OFFSET = $1 LIMIT = $2; `;
   try {
-    const actors = await db.any(query, [pattern]);
-    return actors.map((actor) => prepareActor(actor));
+    const movies = await db.any(query, [offset, limit]);
+    return movies;
+  } catch (error) {
+    console.error("Error actors by name:", error);
+    throw error;
+  }
+}
+export async function fetchPopulars(page, per_page) {
+  const offset = page * per_page;
+  const limit = per_page;
+
+  const query = ` SELECT m.* FROM MostPopularMovies t INNER JOIN Movies m ON t.movie_id = m.id 
+  ORDER BY t.rank DESC OFFSET = $1 LIMIT = $2; `;
+  try {
+    const movies = await db.any(query, [offset, limit]);
+    return movies;
+  } catch (error) {
+    console.error("Error actors by name:", error);
+    throw error;
+  }
+}
+export async function fetchTopRevenue() {
+  const query = ` SELECT * FROM Movies 
+  ORDER BY cumulative DESC LIMIT = 5; `;
+  try {
+    const movies = await db.any(query);
+    return movies;
   } catch (error) {
     console.error("Error actors by name:", error);
     throw error;

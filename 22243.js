@@ -14,9 +14,21 @@ const endDoc = "{/doc}";
 const endLoop = "{/for}";
 
 function getObjectOfContext(key, context) {
-  return key.split(".").reduce((obj, property) => {
-    return obj && obj[property];
-  }, context);
+  const props = key.split(".");
+  let obj = context;
+  for (let prop of props) {
+    if (prop.includes("[")) {
+      let s = prop.indexOf("[") + 1;
+      let e = prop.indexOf("]");
+      let index = parseInt(prop.substring(s, e));
+      prop = prop.substring(0, s - 1);
+      obj = obj[prop][index];
+    } else {
+      obj = obj[prop];
+    }
+    if (!obj) return undefined;
+  }
+  return obj;
 }
 function getObject(key, context, loopContext) {
   const str = getObjectOfContext(key, loopContext);
@@ -63,22 +75,61 @@ function parseToken(template, offset, context, loopContext) {
 function parsePartial(template, offset, context, loopContext) {
   const s = template.indexOf("{", offset) + 1;
   const e = template.indexOf("}", offset);
-  const partial_name = template.substring(s, e).trim();
+  const props = template.substring(s, e).trim().split(" ");
+  const partial_name = props[0];
+  for (let i = 1; i < props.length; i++) {
+    const prop = props[i];
+    const e = prop.split("=");
+    if (e.length == 2) {
+      const key = e[0];
+      const value = e[1].substring(1, e[1].length - 1);
+      let isString = !value.includes("{");
+      console.log(key);
+      console.log(value);
+      if (isString) {
+        context[k] = value;
+      } else {
+        context[key] = getObjectOfContext(
+          value.substring(1, value.length - 1),
+          context,
+          loopContext
+        );
+      }
+    }
+  }
   const filename = "./views" + partial_name + "." + token;
   const content = fs.readFileSync(filename, "utf8");
-  return {
+  const parsed = {
     result: parse(content, 0, context, loopContext),
     offset: e + 1,
   };
+  for (let i = 1; i < props.length; i++) {
+    const prop = props[i];
+    const e = prop.split("=");
+    if (e.length == 2) {
+      const key = e[0];
+      delete context[key];
+    }
+  }
+  return parsed;
 }
 
 function parseVar(template, offset, context, loopContext) {
   const open = template.indexOf("{", offset);
   const close = template.indexOf("}", offset);
   const key = template.substring(open + 1, close).trim();
+  const obj = getObject(key, context, loopContext);
+  let value;
+  if (obj instanceof Number) {
+    value = String(value);
+  } else if (obj instanceof String) {
+    value = obj;
+  } else {
+    value = JSON.stringify(obj);
+  }
   return {
     offset: close + 1,
-    result: String(getObject(key, context, loopContext)),
+    result: value,
   };
 }
 function parseIf(template, offset, context, loopContext) {

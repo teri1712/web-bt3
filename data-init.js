@@ -2,10 +2,20 @@ import db from "./db.js";
 
 async function insertMovie(movie) {
   const query = `
-    INSERT INTO Movies (id, title, year, image, genre, runtime, plot, director, imDbRating, imDbRatingCount)
+    INSERT INTO Movies (id, title, year, image, genre, runtime, plot, director, cumulative, rating)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
     ON CONFLICT DO NOTHING;
   `;
+  let cumulative = 0;
+  if (movie.boxOffice && movie.boxOffice.cumulativeWorldwideGross) {
+    const z = movie.boxOffice.cumulativeWorldwideGross.split("$");
+    if (z.length == 2) {
+      cumulative = parseInt(z[1].replace(",", ""));
+      if (!cumulative) {
+        cumulative = 0;
+      }
+    }
+  }
 
   const values = [
     movie.id,
@@ -13,11 +23,11 @@ async function insertMovie(movie) {
     movie.year,
     movie.image,
     movie.genre,
-    movie.runtime,
+    movie.runtimeStr,
     movie.plot,
     movie.director,
-    movie.imDbRating,
-    movie.imDbRatingCount,
+    cumulative,
+    movie.ratings && movie.ratings.imDb ? parseFloat(movie.ratings.imDb) : 0,
   ];
 
   try {
@@ -165,9 +175,8 @@ async function saveMostPopularMovies() {
 }
 export default async function init() {
   // await saveActors();
-  // await saveMovies();
-  await saveReviews();
-  console.log("okkkkkkkkkkkkkk");
+  await saveMovies();
+  // await saveReviews();
   // await saveTop50();
   // await saveMostPopularMovies();
 }
