@@ -11,6 +11,7 @@ export default {
   },
   methods: {
     submitQuery(query) {
+      console.log(document.getElementById('op-search').value)
       this.$emit('searchAction', query)
     },
   },
@@ -40,6 +41,10 @@ export default {
     </div>
     <div class="flex-grow-0 flex-shrink-0">
       <form class="form-inline" @submit.prevent="submitQuery(currentQuery)">
+        <select id="op-search" class="form-control mr-2">
+          <option>Theo Phim</option>
+          <option>Theo Diễn viên</option>
+        </select>
         <input
           class="form-control"
           type="search"

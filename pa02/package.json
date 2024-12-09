@@ -11,6 +11,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "pg-promise": "^11.10.2",
     "vue": "^3.5.12"
   },
   "devDependencies": {

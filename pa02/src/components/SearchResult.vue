@@ -1,5 +1,5 @@
 <script>
-import dbFetch from '../db/provider'
+import dbFetch from '../db/query-provider'
 export default {
   props: ['query'],
   data() {

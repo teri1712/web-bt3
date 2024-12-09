@@ -1,7 +1,8 @@
 // 22243.js
-const fs = require("fs");
-const path = require("path");
-const { off } = require("process");
+
+import fs from "fs";
+import path from "path";
+
 const token = "22243";
 const begIf = "{if";
 const begLoop = "{for";
@@ -152,7 +153,7 @@ function parseLoop(template, offset, context, loopContext) {
 function render(template, context) {
   return parse(template + endDoc, 0, context, {}, endDoc).result;
 }
-module.exports = function (filePath, options, callback) {
+export default function (filePath, options, callback) {
   console.log(options);
   fs.readFile(filePath, "utf8", (err, template) => {
     if (err) return callback(err);
@@ -168,4 +169,4 @@ module.exports = function (filePath, options, callback) {
       callback(err);
     }
   });
-};
+}

@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import ZoomOutImg from './ImgZoomOut.vue'
-import dbFetch from '../db/provider'
+import dbFetch from '../db/query-provider'
 export default {
   props: {
     section_url: String,
