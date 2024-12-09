@@ -1,6 +1,7 @@
 import express, { query } from "express";
 import customEngine from "./20220.js";
-import init from "./data-init.js";
+import dotenv from "dotenv";
+// import init from "./data-init.js";
 import {
   fetchTopFav,
   fetchTopRevenues,
@@ -9,6 +10,8 @@ import {
   fetchByActorName,
   fetchByMovieNameOrGenre,
 } from "./db.js";
+
+dotenv.config();
 const app = express();
 
 app.engine("20220", customEngine);
@@ -18,8 +21,8 @@ app.use(express.urlencoded({ extended: true }));
 app.set("views", "views");
 app.set("view engine", "20220");
 
-app.listen(8080, () => {
-  console.log("Server is running on port 8080");
+app.listen(process.env.PORT, () => {
+  console.log("Server is running on port 20220");
 });
 app.get("/", async (req, res) => {
   const top_movies = await fetchTopRating();
